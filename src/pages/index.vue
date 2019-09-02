@@ -23,7 +23,13 @@
         >
           GitHub
         </a>
-        <span>{{ssrText}}</span>
+        <div style="margin-top:30px;">
+          https://the-fukui.com/のAPIより
+        </div>
+        <div
+          style="margin-top:30px;"
+          v-html="text.content.rendered"
+        />
       </div>
     </div>
   </div>
@@ -33,15 +39,16 @@
 import Logo from '~/components/Logo.vue'
 
 export default {
-  async asyncData(){
+  components: {
+    Logo
+  },
+  async asyncData({$axios}){
     let result = {}
 
     result.ssrText = 'ここはSSRされた文章です！'
+    result.text = await $axios.get(`https://the-fukui.com/wp-json/wp/v2/pages/2270`).then(result =>{ return result.data})
 
     return result
-  },
-  components: {
-    Logo
   }
 }
 </script>
