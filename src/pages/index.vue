@@ -28,60 +28,67 @@
         </div>
         <div
           style="margin-top:30px;"
-          v-html="text.content.rendered"
+          v-html="text.rawContent"
         />
       </div>
     </div>
   </div>
 </template>
-
 <script>
 import Logo from '~/components/Logo.vue'
-
 export default {
   components: {
     Logo
   },
-  async asyncData({$axios}){
+  async asyncData({
+    $axios
+  }) {
     let result = {}
-
     result.ssrText = 'ここはSSRされた文章です！'
-    result.text = await $axios.get(`https://the-fukui.com/wp-json/wp/v2/pages/2270`).then(result =>{ return result.data})
-
+    result.text = await $axios.get(`https://the-fukui.microcms.io/api/v1/blog/css-selector-wildcard`, {
+      headers: {
+        'X-API-KEY': '1e1de4f9-ef38-472c-ba6c-acb8e877d624'
+      }
+    }).then(result => {
+      return result.data
+    }).catch(e => {
+      console.log(e)
+    })
     return result
   }
 }
+
 </script>
-
 <style>
-.container {
-  margin: 0 auto;
-  min-height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
-}
+  .container {
+    margin: 0 auto;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+  }
 
-.title {
-  font-family: 'Quicksand', 'Source Sans Pro', -apple-system, BlinkMacSystemFont,
-    'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-  display: block;
-  font-weight: 300;
-  font-size: 100px;
-  color: #35495e;
-  letter-spacing: 1px;
-}
+  .title {
+    font-family: 'Quicksand', 'Source Sans Pro', -apple-system, BlinkMacSystemFont,
+      'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    display: block;
+    font-weight: 300;
+    font-size: 100px;
+    color: #35495e;
+    letter-spacing: 1px;
+  }
 
-.subtitle {
-  font-weight: 300;
-  font-size: 42px;
-  color: #526488;
-  word-spacing: 5px;
-  padding-bottom: 15px;
-}
+  .subtitle {
+    font-weight: 300;
+    font-size: 42px;
+    color: #526488;
+    word-spacing: 5px;
+    padding-bottom: 15px;
+  }
 
-.links {
-  padding-top: 15px;
-}
+  .links {
+    padding-top: 15px;
+  }
+
 </style>
