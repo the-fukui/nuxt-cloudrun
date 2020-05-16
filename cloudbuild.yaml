@@ -1,5 +1,24 @@
 steps:
+- name: node:12.16.1-alpine3.11
+  entrypoint: npm
+  args: ['install','--no-progress']
+  dir: src
+
+- name: node:12.16.1-alpine3.11
+  entrypoint: npm
+  args: ['run' ,'build','--no-progress']
+  dir: src
+
+- name: node:12.16.1-alpine3.11
+  entrypoint: npm
+  args: ['prune','--no-progress']
+  dir: src
+
 - name: gcr.io/cloud-builders/docker
-  args:
-    ['build','-f','Dockerfile','-t','gcr.io/cloud-run-test-251708/nuxt-container','.']
-images: ['gcr.io/cloud-run-test-251708/nuxt-container']
+  args: ['build','-f','Dockerfile','-t','gcr.io/$PROJECT_ID/nuxt-container:${SHORT_SHA}','.']
+
+- name: gcr.io/cloud-builders/docker
+  args: ["push", "gcr.io/$PROJECT_ID/nuxt-container"]
+
+- name: gcr.io/cloud-builders/gcloud
+  args: ['beta','run','deploy','nuxt-container','--image','gcr.io/$PROJECT_ID/nuxt-container:${SHORT_SHA}','--async','--platform','managed','--region','asia-northeast1','--memory','1Gi','--allow-unauthenticated']
